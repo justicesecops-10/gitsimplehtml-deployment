@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form</title>
+
+    <!-- Firebase v9 CDN (Non-Module) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <!-- Stylish CSS -->
+    <style>
+        /* General Reset */
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #4b6cb7, #182848);
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+        }
+
+        /* Login Container */
+        .login-container {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
+            width: 350px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            font-size: 28px;
+            color: #00d4ff;
+        }
+
+        /* Input Group */
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px 15px;
+            border-radius: 10px;
+            border: 1px solid #00d4ff;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            outline: none;
+        }
+
+        input::placeholder {
+            color: #ccc;
+        }
+
+        /* Login Button */
+        .login-button {
+            width: 100%;
+            padding: 10px;
+            background: #00d4ff;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .login-button:hover {
+            background: #00b6e6;
+            transform: scale(1.05);
+        }
+
+        /* Forgot Password Link */
+        .forgot-password {
+            margin-top: 10px;
+        }
+
+        .forgot-password a {
+            color: #00d4ff;
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .forgot-password a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>🔒 User Login</h2>
+        <form id="loginForm">
+            <div class="input-group">
+                <label for="username">👤 Username</label>
+                <input type="text" id="username" placeholder="Enter name" required>
+            </div>
+            <div class="input-group">
+                <label for="password">🔑 Password</label>
+                <input type="password" id="password" placeholder="Enter password" required>
+            </div>
+            <button type="button" class="login-button" onclick="login()">🚀 Login</button>
+        </form>
+
+        <div class="forgot-password">
+            <a href="#">❓ Forgot Password?</a>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCIfVyQZCyun1riOROtA0Fk2ybzUV81OmE",
+            authDomain: "hades-23761.firebaseapp.com",
+            databaseURL: "https://hades-23761-default-rtdb.firebaseio.com",
+            projectId: "hades-23761",
+            storageBucket: "hades-23761.appspot.com",
+            messagingSenderId: "180031075804",
+            appId: "1:180031075804:web:b8b09cf2d24afde6eb8b19",
+            measurementId: "G-3V24HB9Z3H"
+        };
+    
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+    
+        // ✅ Firebase Connection Check
+        firebase.database().ref(".info/connected").on("value", (snapshot) => {
+            if (snapshot.val() === true) {
+                console.log("✅ Firebase is connected!");
+                alert("✅ Firebase is connected!");
+            } else {
+                console.log("❌ Failed to connect to Firebase.");
+                alert("❌ Failed to connect to Firebase.");
+            }
+        });
+    
+        // Login Function
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+    
+            const userRef = firebase.database().ref('users/' + username);
+            userRef.once('value').then((snapshot) => {
+                if (snapshot.exists()) {
+                    const userData = snapshot.val();
+                    if (userData.password === password) {
+                        alert('✅ Login successful!');
+                    } else {
+                        alert('❌ Invalid password!');
+                    }
+                } else {
+                    alert('❌ User not found!');
+                }
+            }).catch((error) => {
+                console.error('Error:', error);
+                alert('⚠️ Failed to connect to the database!');
+            });
+        }
+    </script>
+    
+</body>
+</html>
